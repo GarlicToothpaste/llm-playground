@@ -21,7 +21,7 @@ if __name__ == "__main__":
     print(pdf_file_path)
     print(pages)
 
-#Can be anything
+#Initialize the LLM
 llm = ChatOpenAI(
     model_name="llama-3.2-3b-instruct",  # Can be anything; LM Studio ignores it
     openai_api_base="http://localhost:1234/v1",  # LM Studio's endpoint
