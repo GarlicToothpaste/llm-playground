@@ -1,25 +1,25 @@
 import os
-import asyncio
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders import DirectoryLoader
-from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.document_loaders import PyPDFDirectoryLoader
 from langchain.schema.document import Document
-from typing import List #For Python 3.8 and below
-# from langchain.vectorstores.chroma import Chroma
+from langchain_community.vectorstores import Chroma
 from get_embedding_function import get_embedding_function
 
-
-filename = 'company_rules.pdf'
 dir_path = os.path.dirname(os.path.realpath(__file__))
-
 directory_path = dir_path + '/data'
+chroma_path = dir_path + '/chroma'
+
+def main():
+    docs = load_documents()
+    chunks= split_documents(docs)
+    # print(chunks)
+    add_to_chromadb(chunks)
 
 def load_documents():
     document_loader = PyPDFDirectoryLoader(directory_path)
     return document_loader.load()
 
-def split_documents(documents: List[Document]):
+def split_documents(documents: list[Document]):
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=800, 
         chunk_overlap=80,
@@ -28,4 +28,44 @@ def split_documents(documents: List[Document]):
     )
     return text_splitter.split_documents(documents)
 
-docs = load_documents()
+def calculate_chunk_ids(chunks):
+    last_page_id = None
+    current_chunk_index = 0
+    for chunk in chunks:
+        source = chunk.metadata.get("source")
+        page = chunk.metadata.get("page")
+        current_page_id = f"{source}:{page}"
+
+        if current_page_id == last_page_id:
+            current_chunk_index+=1 
+        else:
+            current_chunk_index=0
+
+        chunk_id= f"{current_page_id}:{current_chunk_index}"
+        last_page_id=current_page_id
+        
+        chunk.metadata['id']=chunk_id
+    return chunks
+
+def add_to_chromadb(chunks: list[Document]):
+    db = Chroma(persist_directory=chroma_path, embedding_function=get_embedding_function())
+    chunks_with_ids=calculate_chunk_ids(chunks)
+
+    existing_items= db.get()
+    existing_ids = set(existing_items["ids"])
+    print(f"Number of existing documents in DB: {len(existing_ids)}")
+
+    new_chunks=[]
+    for chunk in chunks_with_ids:
+        if chunk.metadata['id'] not in existing_ids:
+            new_chunks.append(chunk)
+
+    if len(new_chunks):
+        print(f"Adding new chunks {len(new_chunks)}")
+        new_chunks_ids=[chunk.metadata["id"] for chunk in new_chunks]
+        db.add_documents(new_chunks, ids=new_chunks_ids)
+    else:
+        print("No New chunks to add")
+
+if __name__ == "__main__":
+    main()
