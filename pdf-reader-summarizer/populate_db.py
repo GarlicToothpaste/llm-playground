@@ -2,7 +2,7 @@ import os
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import PyPDFDirectoryLoader
 from langchain.schema.document import Document
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 import get_embedding_function
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -67,7 +67,7 @@ def add_to_chromadb(chunks):
         print(f"Adding new documents: {len(new_chunks)}")
         new_chunk_ids = [chunk.metadata["id"] for chunk in new_chunks]
         db.add_documents(new_chunks, ids=new_chunk_ids)
-        db.persist()
+        
     else:
         print("No new documents to add")
 
