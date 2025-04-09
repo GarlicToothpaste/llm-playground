@@ -3,7 +3,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import PyPDFDirectoryLoader
 from langchain.schema.document import Document
 from langchain_community.vectorstores import Chroma
-from get_embedding_function import get_embedding_function
+import get_embedding_function
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 directory_path = dir_path + '/data'
@@ -12,7 +12,6 @@ chroma_path = dir_path + '/chroma'
 def main():
     docs = load_documents()
     chunks= split_documents(docs)
-    # print(chunks)
     add_to_chromadb(chunks)
 
 def load_documents():
@@ -47,25 +46,30 @@ def calculate_chunk_ids(chunks):
         chunk.metadata['id']=chunk_id
     return chunks
 
-def add_to_chromadb(chunks: list[Document]):
-    db = Chroma(persist_directory=chroma_path, embedding_function=get_embedding_function())
-    chunks_with_ids=calculate_chunk_ids(chunks)
+def add_to_chromadb(chunks):
+    db = Chroma(
+        persist_directory=chroma_path,
+        embedding_function=get_embedding_function.get_embedding_function()
+    )
 
-    existing_items= db.get()
+    chunks_with_ids = calculate_chunk_ids(chunks)
+
+    existing_items = db.get()
     existing_ids = set(existing_items["ids"])
-    print(f"Number of existing documents in DB: {len(existing_ids)}")
+    print(f"Existing docs in DB: {len(existing_ids)}")
 
-    new_chunks=[]
+    new_chunks = []
     for chunk in chunks_with_ids:
-        if chunk.metadata['id'] not in existing_ids:
+        if chunk.metadata["id"] not in existing_ids:
             new_chunks.append(chunk)
 
     if len(new_chunks):
-        print(f"Adding new chunks {len(new_chunks)}")
-        new_chunks_ids=[chunk.metadata["id"] for chunk in new_chunks]
-        db.add_documents(new_chunks, ids=new_chunks_ids)
+        print(f"Adding new documents: {len(new_chunks)}")
+        new_chunk_ids = [chunk.metadata["id"] for chunk in new_chunks]
+        db.add_documents(new_chunks, ids=new_chunk_ids)
+        db.persist()
     else:
-        print("No New chunks to add")
+        print("No new documents to add")
 
 if __name__ == "__main__":
     main()
