@@ -1,18 +1,20 @@
 import os 
 from get_embedding_function import get_embedding_function
 from langchain_chroma import Chroma
+from langchain_core.prompts import PromptTemplate
+from pprint import pprint
+from ollama import generate
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 chroma_path = dir_path + '/chroma'
 
 PROMPT_TEMPLATE = """
 Answer the question based only on the following:
-
 {context}
 
 ---
 
-Answer the question based on the above context: {question}
+Answer the question based on the above data: {question}
 """
 
 def query_rag(query_txt:str):
@@ -22,10 +24,14 @@ def query_rag(query_txt:str):
     ) 
 
     results = db.similarity_search(query_txt, k=5)
-    print(results)
+    # pprint(results[0].page_content)
+    context_text = "\n\n---\n\n".join([doc.page_content for doc in results])
+    # print(context_text)
 
+    prompt_template = PromptTemplate.from_template(PROMPT_TEMPLATE)
+    prompt_template = prompt_template.format(context=context_text, question=query_txt)
+
+    response = generate(model='mistral-small:24b', prompt=prompt_template)
+
+    print(response.response)
 query_rag("What are the rules of a speed die")
-
-#TODO Perpare the template
-
-#TODO Feed it to the llm
