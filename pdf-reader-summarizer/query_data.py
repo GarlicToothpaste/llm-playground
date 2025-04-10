@@ -33,5 +33,5 @@ def query_rag(query_txt:str):
 
     response = generate(model='mistral-small:24b', prompt=prompt_template)
 
-    print(response.response)
-query_rag("What are the rules of a speed die")
+    return(response.response)
+# query_rag("How much total money does a player start with in Monopoly? (Answer with the number only)")
