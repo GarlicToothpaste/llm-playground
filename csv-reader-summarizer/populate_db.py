@@ -10,4 +10,6 @@ def load_documents():
     data = loader.load()
     return data
 
+
+
 pprint(load_documents())
