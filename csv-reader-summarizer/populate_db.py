@@ -38,17 +38,19 @@ def add_to_chroma_db(chunks):
     chunks_with_id = calculate_chunk_ids(chunks)
     existing_items = db.get()
     existing_id = set(existing_items['ids'])
-    
+
     print(f"Current Items in ChromaDB: {len(existing_id)}")
 
     new_chunks = []
     for chunk in chunks_with_id:
         if chunk.metadata['id'] not in existing_id:
             new_chunks.append(chunk)
+        # print("Test")
     
     if len(new_chunks):
         print(f"Items to be Added: {len(new_chunks)}")
         new_chunk_ids=[chunk.metadata['id'] for chunk in new_chunks]
+        print("test")
         db.add_documents(new_chunks, ids = new_chunk_ids)
     else:
         print("No New Items to be Added")
