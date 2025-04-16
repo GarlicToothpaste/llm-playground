@@ -27,6 +27,7 @@ def csv_to_db(csv_path: str , table_name: str):
     engine = create_engine(url_object)
     data.to_sql(table_name, con=engine, if_exists='replace', index=False)
 
+    print("Success")
     return "Success"
 
 if __name__ == "__main__":
