@@ -30,30 +30,41 @@ def retrieve_from_db(query : str):
     print(db_context)
     db_context = db_context
 
-system_message=""" You are a Data Analyst Working for Spotify. You have to answer a user's queries and provide relevant information and insights.
-Here is an Example:
+def generate_query(query : str):
+    db_context= retrieve_from_db(query)
 
-Input:
-Which artist has the most number of Monthly Streamers in Japan?
+    system_message=""" You are a Data Analyst Working for Spotify. You have to answer a user's queries and provide relevant information and insights.
+    Here is an Example:
 
-Context:
-The artists with the most number of monthly listeners are the following:
-1. BLACKPINK - 99.8M
-2. Doja Cat - 97.52M
-3. Post Malone - 96.33M
+    Input:
+    Which artist and album has the most number of Monthly Streamers in Japan?
 
-Output:
-The artists with the most amount of monthly listeners in Japan are Blackpink (99.8M), Doja Cat (97.5M), and Post Malone 96.33M 
-"""
+    Context:
+    The artists with the most number of monthly listeners are the following:
+    1. BLACKPINK (BORN PINK)- 99.8M
+    2. Doja Cat (Scarlet) - 97.52M
+    3. Post Malone (Austin) - 96.33M
 
-PROMPT_TEMPLATE= """
-Input:
-{human_input}
+    Output:
+    The artists and albums with the most amount of monthly listeners in Japan are Blackpink (BORN PINK) - 99.8M, Doja Cat (Scarlet) - 97.5M, and Post Malone (Austin) - 96.33M 
+    """
 
-Context:
-{db_context}
+    PROMPT_TEMPLATE= """
+    Input:
+    {human_input}
 
-Output:
-"""
+    Context:
+    {db_context}
 
-prompt = HumanMessagePromptTemplate(PROMPT_TEMPLATE)
+    Output:
+    """
+
+    human_prompt = HumanMessagePromptTemplate(PROMPT_TEMPLATE)
+    messages = [ SystemMessage(system_message),
+                human_prompt.format(human_input=query, db_context=db_context)
+                ]
+    response= llm(messages).content
+    print(response)
+    return response
+#TODO: LLM has no rights to query, investigate
+generate_query("Which artists in australia has the most amount of monthly listeners?")
