@@ -21,14 +21,15 @@ url_object = URL.create(
     )
 
 db = SQLDatabase.from_uri(url_object)
-llm = ChatOllama(model="mistral-small:24b", temperature=0.3)
+llm = ChatOllama(model="mistral-small:24b", temperature=0.3, stop_sequence=["\nSQLQuery:"])
 
 db_chain = SQLDatabaseChain.from_llm(llm, db, verbose=True)
 
 def retrieve_from_db(query : str):
-    db_context = db_chain(query)
-    print(db_context)
-    db_context = db_context
+    #TODO: The error is here. Mistral Outputs a paragraph instead of an SQL Query so the db_chain.invoke fails
+    db_context = db_chain.invoke(input=query)
+    db_context = db_context['result'].strip()
+    return db_context
 
 def generate_query(query : str):
     db_context= retrieve_from_db(query)
@@ -66,5 +67,5 @@ def generate_query(query : str):
     response= llm(messages).content
     print(response)
     return response
-#TODO: LLM has no rights to query, investigate
+
 generate_query("Which artists in australia has the most amount of monthly listeners?")
