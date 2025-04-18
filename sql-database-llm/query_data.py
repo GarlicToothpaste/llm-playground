@@ -21,14 +21,16 @@ url_object = URL.create(
     )
 
 db = SQLDatabase.from_uri(url_object)
-llm = ChatOllama(model="mistral-small:24b", temperature=0.3, stop_sequence=["\nSQLQuery:"])
+
+#TODO: Try an OpenAI Model Instead.
+llm = ChatOllama(model="llama3.2:1b-instruct-fp16", temperature=0.3, system_message= "Given an input question, convert it to a SQL query. No pre-amble.")
 
 db_chain = SQLDatabaseChain.from_llm(llm, db, verbose=True)
 
 def retrieve_from_db(query : str):
     #TODO: The error is here. Mistral Outputs a paragraph instead of an SQL Query so the db_chain.invoke fails
-    db_context = db_chain.invoke(input=query)
-    db_context = db_context['result'].strip()
+    db_context = db.invoke(input=query)
+    print(db_context)
     return db_context
 
 def generate_query(query : str):
