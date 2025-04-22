@@ -23,13 +23,11 @@ url_object = URL.create(
 
 db = SQLDatabase.from_uri(url_object)
 
-#TODO: Try an OpenAI Model Instead.
 llm = ChatOpenAI( temperature=0, api_key=os.getenv("OPENAI_KEY"))
 
 db_chain = SQLDatabaseChain.from_llm(llm, db, verbose=True)
 
 def retrieve_from_db(query : str):
-    #TODO: The error is here. Mistral Outputs a paragraph instead of an SQL Query so the db_chain.invoke fails
     db_context = db_chain(query)
     print(db_context)
     return db_context
