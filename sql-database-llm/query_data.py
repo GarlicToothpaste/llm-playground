@@ -7,6 +7,7 @@ from langchain_ollama import ChatOllama
 from langchain_experimental.sql import SQLDatabaseChain
 from langchain.schema import HumanMessage, SystemMessage
 from langchain_core.prompts import HumanMessagePromptTemplate
+from langchain_openai import ChatOpenAI
 
 env_path = Path(__file__).parent / ".env"
 load_dotenv(dotenv_path=env_path)  
@@ -23,13 +24,13 @@ url_object = URL.create(
 db = SQLDatabase.from_uri(url_object)
 
 #TODO: Try an OpenAI Model Instead.
-llm = ChatOllama(model="llama3.2:1b-instruct-fp16", temperature=0.3, system_message= "Given an input question, convert it to a SQL query. No pre-amble.")
+llm = ChatOpenAI( temperature=0, api_key=os.getenv("OPENAI_KEY"))
 
 db_chain = SQLDatabaseChain.from_llm(llm, db, verbose=True)
 
 def retrieve_from_db(query : str):
     #TODO: The error is here. Mistral Outputs a paragraph instead of an SQL Query so the db_chain.invoke fails
-    db_context = db.invoke(input=query)
+    db_context = db_chain(query)
     print(db_context)
     return db_context
 
@@ -62,7 +63,7 @@ def generate_query(query : str):
     Output:
     """
 
-    human_prompt = HumanMessagePromptTemplate(PROMPT_TEMPLATE)
+    human_prompt = HumanMessagePromptTemplate.from_template(PROMPT_TEMPLATE)
     messages = [ SystemMessage(system_message),
                 human_prompt.format(human_input=query, db_context=db_context)
                 ]
