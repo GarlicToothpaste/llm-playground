@@ -69,4 +69,11 @@ def generate_query(query : str):
     print(response)
     return response
 
-generate_query("Which artists in australia has the most amount of monthly listeners?")
+#Correct
+# generate_query("Which artists in australia has the most amount of monthly listeners?")
+
+#TODO: It returns the top in a country, not worldwide. Make it aggregate.
+# generate_query("What album is the most listened to worldwide?")
+
+#Correct
+generate_query("What country does BTS have the highest amount of total streams regardless of the album?")
