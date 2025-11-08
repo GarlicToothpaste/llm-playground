@@ -11,7 +11,7 @@ This is the context:
 {context}
 
 
----
+---ls
 
 Answer this question using the above data:
 {question}
@@ -27,7 +27,7 @@ def query_data(query_text : str):
     # prompt = prompt.invoke({"context":context, "question":query_text})
     prompt = prompt.template.format(context=context, question=query_text)
     
-    response = generate(model="mistral-small:24b", prompt=prompt)
+    response = generate(model="qwen3:4b", prompt=prompt)
     print(response.response)
 
 

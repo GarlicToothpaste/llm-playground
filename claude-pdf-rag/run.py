@@ -1,6 +1,9 @@
 import anthropic
 from pathlib import Path
 from dotenv import load_dotenv
+import anthropic
+import base64
+import httpx
 
 env_path = Path(__file__).parent / ".env"
 load_dotenv(dotenv_path=env_path)  
@@ -32,4 +35,4 @@ def summarize_pdf_url(question : str , url : str):
     )
     return message.content
 
-print(summarize_pdf_url( "What are the key findings in this document?" , "https://assets.anthropic.com/m/1cd9d098ac3e6467/original/Claude-3-Model-Card-October-Addendum.pdf"))
+# print(summarize_pdf_url( "What are the key findings in this document?" , "https://assets.anthropic.com/m/1cd9d098ac3e6467/original/Claude-3-Model-Card-October-Addendum.pdf"))
