@@ -3,6 +3,7 @@ from langchain_community.document_loaders import DirectoryLoader
 from langchain_community.document_loaders.csv_loader import CSVLoader
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.document_loaders.merge import MergedDataLoader
+from langchain_community.document_loaders import PyPDFDirectoryLoader
 
 # from pprint import pprint
 import re
@@ -18,13 +19,17 @@ def main():
     data = load_documents()
     add_to_chroma_db(data)
     
+# def load_documents():
+#     csv_loader = DirectoryLoader(directory_path, glob='**/*.csv', loader_cls=CSVLoader)
+#     # pdf_loader = DirectoryLoader(directory_path, glob='**/*.pdf', loader_cls=PyPDFLoader)
+#     # merged_loader = MergedDataLoader(loaders=[csv_loader, pdf_loader])
+#     data = csv_loader.load()
+#     print(len(data))
+#     return data
+
 def load_documents():
-    csv_loader = DirectoryLoader(directory_path, glob='**/*.csv', loader_cls=CSVLoader)
-    pdf_loader = DirectoryLoader(directory_path, glob='**/*.pdf', loader_cls=PyPDFLoader)
-    merged_loader = MergedDataLoader(loaders=[csv_loader, pdf_loader])
-    data = merged_loader.load()
-    print(len(data))
-    return data
+    document_loader = PyPDFDirectoryLoader(directory_path)
+    return document_loader.load()
 
 def calculate_chunk_ids(chunks):
     for chunk in chunks:
