@@ -74,10 +74,17 @@ def add_to_chroma_db(chunks):
     
     if len(new_chunks):
         print(f"Items to be Added: {len(new_chunks)}")
-        new_chunk_ids=[chunk.metadata['id'] for chunk in new_chunks]
-        # print(new_chunks)
-        print("Test")
-        db.add_documents(new_chunks, ids = new_chunk_ids)
+        
+        # Split new_chunks into batches of 500
+        for i in range(0, len(new_chunks), 500):
+            batch = new_chunks[i:i + 500]
+            batch_ids = [chunk.metadata['id'] for chunk in batch]
+            
+            print(f"Adding batch {i // 500 + 1} with {len(batch)} items...")
+            db.add_documents(batch, ids=batch_ids)
+        
+        print("All chunks added successfully.")
+
     else:
         print("No New Items to be Added")
 
