@@ -19,28 +19,41 @@ def main():
     data = load_documents()
     add_to_chroma_db(data)
     
-# def load_documents():
-#     csv_loader = DirectoryLoader(directory_path, glob='**/*.csv', loader_cls=CSVLoader)
-#     # pdf_loader = DirectoryLoader(directory_path, glob='**/*.pdf', loader_cls=PyPDFLoader)
-#     # merged_loader = MergedDataLoader(loaders=[csv_loader, pdf_loader])
-#     data = csv_loader.load()
-#     print(len(data))
-#     return data
-
 def load_documents():
-    document_loader = PyPDFDirectoryLoader(directory_path)
-    return document_loader.load()
+    csv_loader = DirectoryLoader(directory_path, glob='**/*.csv', loader_cls=CSVLoader)
+    pdf_loader = DirectoryLoader(directory_path, glob='**/*.pdf', loader_cls=PyPDFLoader)
+    merged_loader = MergedDataLoader(loaders=[csv_loader, pdf_loader])
+    data =merged_loader.load()
+    return data
 
 def calculate_chunk_ids(chunks):
+    last_page_id = None
+    current_chunk_index = 0
     for chunk in chunks:
         source=chunk.metadata['source']
-        show_id = ''
+        if (source.endswith("pdf")):
 
-        match = re.search(r'^show_id:\s*(\S+)', str(chunk.page_content), re.MULTILINE)
-        if match:
-            show_id = match.group(1)
+            page = chunk.metadata.get("page")
+            current_page_id = f"{source}:{page}"
 
-        chunk.metadata['id'] = f'{source}:{show_id}'
+            if current_page_id == last_page_id:
+                current_chunk_index+=1 
+            else:
+                current_chunk_index=0
+
+            chunk_id= f"{current_page_id}:{current_chunk_index}"
+            last_page_id=current_page_id
+            
+            chunk.metadata['id']=chunk_id
+
+        elif(source.endswith("csv")):
+            show_id = ''
+
+            match = re.search(r'^show_id:\s*(\S+)', str(chunk.page_content), re.MULTILINE)
+            if match:
+                show_id = match.group(1)
+
+            chunk.metadata['id'] = f'{source}:{show_id}'
 
     return chunks
         
