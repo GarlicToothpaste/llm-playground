@@ -31,7 +31,7 @@ def query_rag(query_txt:str):
     prompt_template = PromptTemplate.from_template(PROMPT_TEMPLATE)
     prompt_template = prompt_template.format(context=context_text, question=query_txt)
 
-    response = generate(model='mistral-small:24b', prompt=prompt_template)
+    response = generate(model='qwen3:4b', prompt=prompt_template)
 
     return(response.response)
-# query_rag("How much total money does a player start with in Monopoly? (Answer with the number only)")
+query_rag("How much total money does a player start with in Monopoly? (Answer with the number only)")
