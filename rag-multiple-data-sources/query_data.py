@@ -34,4 +34,4 @@ def query_rag(query_txt:str):
     response = generate(model='qwen3:4b', prompt=prompt_template)
 
     return(response.response)
-query_rag("How much total money does a player start with in Monopoly? (Answer with the number only)")
+print(query_rag("How much total money does a player start with in Monopoly? (Answer with the number only)"))
