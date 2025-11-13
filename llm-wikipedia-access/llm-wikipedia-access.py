@@ -51,4 +51,4 @@ def query_rag(query_txt:str):
 
     return response
 
-print(query_rag("Can you give me an overview of the fil Inception?"))
+print(query_rag("Can you give me an overview of the film Inception?")['response'])
