@@ -35,4 +35,4 @@ result = agent.invoke({
     "messages": [{"role": "user", "content": "What's 5 plus 3 and what is the current system time?"}]
 })
 
-print(result)
+print(result["messages"][-1].content)
