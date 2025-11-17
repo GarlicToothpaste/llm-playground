@@ -9,6 +9,7 @@ model = ChatOllama(
 # response = model.invoke("Hello")
 # print(response.content)
 
+#TODO: Add a functionality that uses an API
 @tool
 def add_numbers (a : int , b : int):
     """Adds two numbers together"""
