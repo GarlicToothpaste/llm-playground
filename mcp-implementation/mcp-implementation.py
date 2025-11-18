@@ -1,6 +1,8 @@
 from langchain_ollama import ChatOllama
 from langchain.agents import create_agent
 from langchain.tools import tool
+from langchain_community.retrievers import WikipediaRetriever
+
 # Initialize the Ollama chat model
 model = ChatOllama(
     model="qwen3:4b",  # or another model you've pulled (mistral, neural-chat, etc.)
@@ -25,15 +27,23 @@ def get_system_time():
     """Gets the system time"""
     time = "It is 12:00"
     return time
- 
+
+@tool
+def search_wikipedia(word : str):
+    """Searches Wikipedia given a string as a keyword"""
+    wiki = WikipediaRetriever()
+    docs = wiki.invoke(word)
+    information = "\n---\n".join([f"**{doc.metadata['title']}**\n{doc.page_content}" for doc in docs])
+    return information
+
 agent = create_agent(
     model = model,
-    tools = [add_numbers , multiply_numbers, get_system_time],
+    tools = [add_numbers , multiply_numbers, get_system_time, search_wikipedia],
     system_prompt= "You are a helpful assistant, use tools when needed."
 )
 
 result = agent.invoke({
-    "messages": [{"role": "user", "content": "What's 5 plus 3 and what is the current system time?"}]
+    "messages": [{"role": "user", "content": "Can you search wikipedia about Halo 3? What does it say about it?"}]
 })
 
 print(result["messages"][-1].content)
