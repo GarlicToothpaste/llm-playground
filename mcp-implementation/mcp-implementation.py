@@ -2,6 +2,7 @@ from langchain_ollama import ChatOllama
 from langchain.agents import create_agent
 from langchain.tools import tool
 from langchain_community.retrievers import WikipediaRetriever
+from langchain_community.tools import DuckDuckGoSearchRun
 
 # Initialize the Ollama chat model
 model = ChatOllama(
@@ -36,14 +37,21 @@ def search_wikipedia(word : str):
     information = "\n---\n".join([f"**{doc.metadata['title']}**\n{doc.page_content}" for doc in docs])
     return information
 
+@tool
+def search_internet(word : str):
+    """Searches the internet given a string as a keyword"""
+    search = DuckDuckGoSearchRun()
+    information = search.invoke(word)
+    return information
+
 agent = create_agent(
     model = model,
-    tools = [add_numbers , multiply_numbers, get_system_time, search_wikipedia],
+    tools = [add_numbers , multiply_numbers, get_system_time, search_wikipedia , search_internet],
     system_prompt= "You are a helpful assistant, use tools when needed."
 )
 
 result = agent.invoke({
-    "messages": [{"role": "user", "content": "Can you search wikipedia about Halo 3? What does it say about it?"}]
+    "messages": [{"role": "user", "content": "Can you search the internet about Indonesia? What does it say about it?"}]
 })
 
 print(result["messages"][-1].content)
