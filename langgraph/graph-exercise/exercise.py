@@ -74,11 +74,16 @@ def tool_node(state: dict):
         result.append(ToolMessage(content=observation, tool_call_id=tool_call["id"]))
     return {"messages": result}
 
+def end_message_node(state: dict):
+    """Thanks the user after using the application"""
+    message = "Thank you for using this AI. We hope we have helped you!"
+    return {"messages" : message}
+
 from typing import Literal
 from langgraph.graph import StateGraph, START, END
 
 
-def should_continue(state: MessagesState) -> Literal["tool_node", END]:
+def should_continue(state: MessagesState) -> Literal["tool_node", "end_message_node"]:
     """Decide if we should continue the loop or stop based upon whether the LLM made a tool call"""
 
     messages = state["messages"]
@@ -89,4 +94,44 @@ def should_continue(state: MessagesState) -> Literal["tool_node", END]:
         return "tool_node"
 
     # Otherwise, we stop (reply to the user)
-    return END
+    return "end_message_node"
+
+
+
+# Build workflow
+agent_builder = StateGraph(MessagesState)
+
+# Add nodes
+agent_builder.add_node("llm_call", llm_call)
+agent_builder.add_node("tool_node", tool_node)
+agent_builder.add_node("end_message_node", end_message_node)
+
+# Add edges to connect nodes
+agent_builder.add_edge(START, "llm_call")
+agent_builder.add_conditional_edges(
+    "llm_call",
+    should_continue,
+    ["tool_node", "end_message_node"]
+)
+agent_builder.add_edge("tool_node", "llm_call")
+agent_builder.add_edge("end_message_node" , END)
+# Compile the agent
+agent = agent_builder.compile()
+
+# Show the agent
+# from IPython.display import Image, display
+# display(Image(agent.get_graph(xray=True).draw_mermaid_png()))
+
+# Invoke
+# from langchain.messages import HumanMessage
+# messages = [HumanMessage(content="Add 3 and 4.")]
+# messages = agent.invoke({"messages": messages})
+# for m in messages["messages"]:
+#     m.pretty_print()
+
+
+from langchain.messages import HumanMessage
+messages = [HumanMessage(content="Send an email to bob.green@gmail.com")]
+messages = agent.invoke({"messages": messages})
+for m in messages["messages"]:
+    m.pretty_print()
