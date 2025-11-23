@@ -74,10 +74,12 @@ def tool_node(state: dict):
         result.append(ToolMessage(content=observation, tool_call_id=tool_call["id"]))
     return {"messages": result}
 
+from langchain_core.messages import AIMessage
+
 def end_message_node(state: dict):
     """Thanks the user after using the application"""
     message = "Thank you for using this AI. We hope we have helped you!"
-    return {"messages" : message}
+    return {"messages" : [AIMessage(content=message)]}
 
 from typing import Literal
 from langgraph.graph import StateGraph, START, END
