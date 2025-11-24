@@ -1,13 +1,8 @@
-from langchain.messages import AnyMessage
-from typing_extensions import TypedDict, Annotated
-import operator
 from typing import Literal
 from langgraph.graph import StateGraph, START, END
-
-class MessagesState(TypedDict):
-    messages: Annotated[list[AnyMessage], operator.add]
-    llm_calls: int
-
+from utils.state import MessagesState
+from langchain.messages import HumanMessage
+from utils.nodes import llm_call, tool_node, end_message_node
 
 def should_continue(state: MessagesState) -> Literal["tool_node", "end_message_node"]:
     """Decide if we should continue the loop or stop based upon whether the LLM made a tool call"""
@@ -21,10 +16,6 @@ def should_continue(state: MessagesState) -> Literal["tool_node", "end_message_n
 
     # Otherwise, we stop (reply to the user)
     return "end_message_node"
-
-from nodes import llm_call
-from nodes import tool_node
-from nodes import end_message_node
 
 # Build workflow
 agent_builder = StateGraph(MessagesState)
@@ -46,16 +37,8 @@ agent_builder.add_edge("end_message_node" , END)
 # Compile the agent
 agent = agent_builder.compile()
 
-# Invoke
-# from langchain.messages import HumanMessage
-# messages = [HumanMessage(content="Add 3 and 4.")]
-# messages = agent.invoke({"messages": messages})
-# for m in messages["messages"]:
-#     m.pretty_print()
 
-
-from langchain.messages import HumanMessage
-messages = [HumanMessage(content="Send an email to bob.green@gmail.com")]
+messages = [HumanMessage(content="Send an email to bob.green@gmail.com and send a text message to 09207801532")]
 messages = agent.invoke({"messages": messages})
 for m in messages["messages"]:
     m.pretty_print()
