@@ -2,7 +2,7 @@ from langchain.messages import SystemMessage
 from langchain.messages import ToolMessage
 from langchain_core.messages import AIMessage
 from langchain_ollama import ChatOllama
-from tools import send_email, send_text_message
+from utils.tools import send_email, send_text_message
 
 model = ChatOllama(
     model="qwen3:4b",
