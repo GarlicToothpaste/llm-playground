@@ -54,6 +54,14 @@ def classify_intent(state : EmailAgentState) -> Command[Literal["search_document
     )
 
 def bug_tracking(state : EmailAgentState) -> Command[Literal["draft_response"]]:
+    """Searches knowledge base for information"""
+
+    # Returns {} when there is no classification
+    classification = state.get('classification' , {})
+    query = f"{classification.get('intent', '')} {classification.get('topic', '')}"
+    
+
+def bug_tracking(state : EmailAgentState) -> Command[Literal["draft_response"]]:
     """Creates or update a bug report ticket"""
 
     ticket_id = "BUG-4245"
