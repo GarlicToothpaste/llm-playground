@@ -52,3 +52,15 @@ def classify_intent(state : EmailAgentState) -> Command[Literal["search_document
         update={"classification": classification},
         goto=goto
     )
+
+def bug_tracking(state : EmailAgentState) -> Command[Literal["draft_response"]]:
+    """Creates or update a bug report ticket"""
+
+    ticket_id = "BUG-4245"
+    return Command(
+        update={
+            "search_results" : [f"Bug Ticket with {ticket_id} created"],
+            "current_step" : "bug_tracked"
+        },
+        goto = "draft_response"
+    )
