@@ -60,6 +60,20 @@ def search_documentation(state : EmailAgentState) -> Command[Literal["draft_resp
     classification = state.get('classification' , {})
     query = f"{classification.get('intent', '')} {classification.get('topic', '')}"
 
+    try:
+        search_results = [
+            "Reset password via Settings > Security > Change Password",
+            "Password must be at least 12 characters",
+            "Include uppercase, lowercase, numbers, and symbols"
+        ]
+    except Exception as e:
+        search_results = [f"Search temporarily unavailable: {str(e)}"]
+    
+    return Command(
+        update={"search_results": search_results},
+        goto="draft_response"
+    )
+
 
 def bug_tracking(state : EmailAgentState) -> Command[Literal["draft_response"]]:
     """Creates or update a bug report ticket"""
