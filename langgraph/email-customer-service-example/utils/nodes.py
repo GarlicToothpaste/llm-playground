@@ -86,3 +86,31 @@ def bug_tracking(state : EmailAgentState) -> Command[Literal["draft_response"]]:
         },
         goto = "draft_response"
     )
+
+def draft_response(state: EmailAgentState) -> Command[Literal['human_review', "send_reply"]]:
+
+    classification = state.get('classification', {})
+
+    context_sections = []
+
+    if state.get('search_results'):
+        formatted_docs = "\n".join([f"- {doc}" for doc in state['search_results']])
+        context_sections.append(f"Relevant documentation:\n{formatted_docs}")
+
+    if state.get('customer_history'):
+        context_sections.append(f"Customer tier: {state['customer_history'].get('tier', 'standard')}")
+
+    draft_prompt = f"""
+    Draft a response to this customer email:
+    {state['email_content']}
+
+    Email intent: {classification.get('intent', 'unknown')}
+    Urgency level: {classification.get('urgency', 'medium')}
+
+    {chr(10).join(context_sections)}
+
+    Guidelines:
+    - Be professional and helpful
+    - Address their specific concern
+    - Use the provided documentation when relevant
+    """
