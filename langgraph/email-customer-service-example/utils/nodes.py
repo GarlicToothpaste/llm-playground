@@ -114,3 +114,19 @@ def draft_response(state: EmailAgentState) -> Command[Literal['human_review', "s
     - Address their specific concern
     - Use the provided documentation when relevant
     """
+
+    response = llm.invoke(draft_prompt)
+
+    # Determine if human review needed based on urgency and intent
+    needs_review = (
+        classification.get('urgency') in ['high', 'critical'] or
+        classification.get('intent') == 'complex'
+    )
+
+    # Route to appropriate next node
+    goto = "human_review" if needs_review else "send_reply"
+
+    return Command(
+        update={"draft_response": response.content},  # Store only the raw response
+        goto=goto
+    )
