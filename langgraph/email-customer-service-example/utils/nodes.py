@@ -2,6 +2,8 @@ from langchain_ollama import ChatOllama
 from langchain.messages import HumanMessage
 from langgraph.types import interrupt, Command, RetryPolicy
 from typing import Literal
+from langgraph.graph import END
+
 from utils.state import EmailAgentState, EmailClassification
 
 llm = ChatOllama(
@@ -130,6 +132,30 @@ def draft_response(state: EmailAgentState) -> Command[Literal['human_review', "s
         update={"draft_response": response.content},  # Store only the raw response
         goto=goto
     )
+
+def human_review (state: EmailAgentState):
+    """Pause for human review using interrupt and route based on human decision"""
+
+    classification = state.get('classification')
+
+    human_decision = interrupt({
+        "email_id" : state.get("email_id", ''),
+        "email_content" : state.get("email_content", ''),
+        "draft_response" : state.get("draft_response", ''),
+        "urgency" : classification.get("urgency" , ''),
+        "intent" : classification.get("intent" , ''),
+        "action" : "Please review and approve this response"
+    })
+
+    if human_decision.get("approved"):
+        return Command (
+            update = {"draft_response" : human_decision.get(("edited_response"), state.get("draft_response"))},
+            goto = "send_reply"
+        )
+    
+    else:
+        rejection=  Command(update = {}, goto=END)
+
 
 def send_reply (state: EmailAgentState):
     """Send Email Response"""
