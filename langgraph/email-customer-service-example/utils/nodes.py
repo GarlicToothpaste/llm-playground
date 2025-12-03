@@ -130,3 +130,10 @@ def draft_response(state: EmailAgentState) -> Command[Literal['human_review', "s
         update={"draft_response": response.content},  # Store only the raw response
         goto=goto
     )
+
+def send_reply (state: EmailAgentState):
+    """Send Email Response"""
+
+    print(f"Sending the reply: {state['draft_response']}")
+
+    return {}
