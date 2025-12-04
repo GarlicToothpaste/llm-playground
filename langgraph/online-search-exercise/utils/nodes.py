@@ -9,6 +9,7 @@ llm = ChatOllama(
 
 def read_message(state:MessageState):
     """LLM Reads the User Message"""
+    print("Test Node")
     return {
         "messages": HumanMessage(content=f"Processing message: {state['message_content']}")
     }

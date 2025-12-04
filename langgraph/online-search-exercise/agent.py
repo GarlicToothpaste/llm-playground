@@ -10,11 +10,11 @@ workflow.add_edge("read_message", END)
 
 app = workflow.compile()
 
-# initial_state = {
-#     "email_content": "I was charged twice for my subscription! This is urgent!",
-#     "sender_email": "customer@example.com",
-#     "email_id": "email_123",
-#     "messages": []
-# }
+initial_state = {
+    "message_content": "This is a test message"
+    # "sender_email": "customer@example.com",
+    # "email_id": "email_123",
+    # "messages": []
+}
 
-# result = app.invoke(initial_state, config)
+result = app.invoke(initial_state)
