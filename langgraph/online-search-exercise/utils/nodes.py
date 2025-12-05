@@ -2,6 +2,7 @@ from utils.state import MessageState
 from langchain_ollama import ChatOllama
 from langchain.messages import HumanMessage
 from utils.state import MessageClassification
+from langgraph.types import Command
 
 llm = ChatOllama(
     model="qwen3:4b",
@@ -29,4 +30,14 @@ def classify_message(state:MessageState):
     """
 
     classification = structured_llm.invoke(classification_prompt)
-    print(classification)
+    # print(classification)
+
+    if classification['platform'] == "wikipedia":
+        goto = "wikipedia_search"
+    if classification['platform'] == "duckduckgo":
+        goto = "duckduckgo_search"
+
+    return Command(
+        update = {"classification" : classification},
+        goto = goto
+    )
