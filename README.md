@@ -10,3 +10,5 @@ Repo of me learning llm programming
 - langgraph
     - first-project: Used Sample Code from the langgraph docs
     - graph-exercise: Modified sample code from langgraph docs to make an agent that sends emails and text messages
+    - email-custome-service-example: Sample code from langgraph thinkink module
+    - online-search-exercise: Workflow that searches on either wikipedia or duckduckgo based on classification of message
