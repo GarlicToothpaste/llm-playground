@@ -41,3 +41,10 @@ def classify_message(state:MessageState):
         update = {"classification" : classification},
         goto = goto
     )
+
+def duckduckgo_search(state: MessageState):
+    print("DuckDuckGo Search")
+
+
+def wikipedia_search(state: MessageState):
+    print("Wikipedia Search")
