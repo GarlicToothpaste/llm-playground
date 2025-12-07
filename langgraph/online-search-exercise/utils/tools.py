@@ -11,7 +11,7 @@ def search_wikipedia(word : str):
     return information
 
 @tool
-def search_internet(word : str):
+def search_duckduckgo(word : str):
     """Searches the internet given a string as a keyword"""
     search = DuckDuckGoSearchRun()
     information = search.invoke(word)

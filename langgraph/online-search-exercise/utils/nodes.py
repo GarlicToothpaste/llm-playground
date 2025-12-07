@@ -4,10 +4,16 @@ from langchain.messages import HumanMessage
 from utils.state import MessageClassification
 from langgraph.types import Command
 
-llm = ChatOllama(
+from utils.tools import search_wikipedia, search_duckduckgo
+
+model = ChatOllama(
     model="qwen3:4b",
     temperature=0.7
 )
+
+tools_list = [search_wikipedia, search_duckduckgo]
+tools_by_name = {tool.name: tool for tool in tools_list}
+model_with_tools = model.bind_tools(tools_list)
 
 def read_message(state:MessageState):
     """LLM Reads the User Message"""
