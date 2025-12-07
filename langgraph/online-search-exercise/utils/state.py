@@ -5,5 +5,6 @@ class MessageClassification(TypedDict):
 
 class MessageState(TypedDict):
     message_content : str
+    search_summary : str | None
     classification : MessageClassification | None
     search_result : str | None
