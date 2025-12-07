@@ -43,8 +43,25 @@ def classify_message(state:MessageState):
     )
 
 def duckduckgo_search(state: MessageState):
+
+    prompt = f"""
+        You are a helpful assistant. Your job is to provide a keyword based on a users message and use it to search on duckduckgo.
+
+        Given this message {state['message_content']}
+
+        Give a keyword to search.
+    """
     print("DuckDuckGo Search")
+
+    
 
 
 def wikipedia_search(state: MessageState):
-    print("Wikipedia Search")
+    
+    prompt = f"""
+        You are a helpful assistant. Your job is to provide a keyword based on a users message and use it to search on wikipedia.
+
+        Given this message {state['message_content']}
+
+        Give a keyword to search.
+    """
