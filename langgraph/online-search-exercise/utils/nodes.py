@@ -6,14 +6,14 @@ from langgraph.types import Command
 
 from utils.tools import search_wikipedia, search_duckduckgo
 
-model = ChatOllama(
+llm = ChatOllama(
     model="qwen3:4b",
     temperature=0.7
 )
 
 tools_list = [search_wikipedia, search_duckduckgo]
 tools_by_name = {tool.name: tool for tool in tools_list}
-model_with_tools = model.bind_tools(tools_list)
+model_with_tools = llm.bind_tools(tools_list)
 
 def read_message(state:MessageState):
     """LLM Reads the User Message"""
@@ -50,24 +50,29 @@ def classify_message(state:MessageState):
 
 def duckduckgo_search(state: MessageState):
 
-    prompt = f"""
+    keyword_prompt = f"""
         You are a helpful assistant. Your job is to provide a keyword based on a users message and use it to search on duckduckgo.
 
         Given this message {state['message_content']}
 
         Give a keyword to search.
     """
-    print("DuckDuckGo Search")
+    keyword = llm.invoke(keyword_prompt)
+    print (keyword)
 
     
 
 
 def wikipedia_search(state: MessageState):
     
-    prompt = f"""
+    keyword_prompt = f"""
         You are a helpful assistant. Your job is to provide a keyword based on a users message and use it to search on wikipedia.
 
         Given this message {state['message_content']}
 
         Give a keyword to search.
     """
+    keyword = llm.invoke(keyword_prompt)
+    print (keyword)
+
+    
