@@ -13,7 +13,7 @@ llm = ChatOllama(
 
 tools_list = [search_wikipedia, search_duckduckgo]
 tools_by_name = {tool.name: tool for tool in tools_list}
-model_with_tools = llm.bind_tools(tools_list)
+# model_with_tools = llm.bind_tools(tools_list)
 
 def read_message(state:MessageState):
     """LLM Reads the User Message"""
@@ -58,7 +58,8 @@ def duckduckgo_search(state: MessageState):
         Give a keyword to search.
     """
     keyword = llm.invoke(keyword_prompt)
-    print (keyword)
+    
+
 
     
 
@@ -73,6 +74,12 @@ def wikipedia_search(state: MessageState):
         Give a keyword to search.
     """
     keyword = llm.invoke(keyword_prompt)
-    print (keyword)
+    # print (keyword)
+    model_with_wikipedia = llm.bind_tools(tools_list, tool_choice="search_wikipedia")
 
-    
+    search_result = model_with_wikipedia.invoke(f"Search for this keyword: {keyword}")
+
+    print(search_result["messages"][-1].content)
+
+def summarize_search(state: MessageState):
+    print("Summarize Search Node")
