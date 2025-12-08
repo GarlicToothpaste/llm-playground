@@ -77,9 +77,14 @@ def wikipedia_search(state: MessageState):
     # print (keyword)
     model_with_wikipedia = llm.bind_tools(tools_list, tool_choice="search_wikipedia")
 
-    search_result = model_with_wikipedia.invoke(f"Search wikipedia for this keyword: {keyword}")
-
-    print(search_result)
+    result = model_with_wikipedia.invoke(f"Search wikipedia for this keyword: {keyword}")
+    tool_call = result.tool_calls[0]  # First (and only) tool call
+    tool = tools_by_name[tool_call['name']]  # Lookup tool
+    tool_result = tool.invoke(tool_call['args'])  # Execute with args
+    
+    print(f"Tool result: {tool_result}")
+    
+    # print(search_result)
 
 def summarize_search(state: MessageState):
     print("Summarize Search Node")
