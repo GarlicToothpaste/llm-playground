@@ -51,7 +51,8 @@ agent = create_agent(
 )
 
 result = agent.invoke({
-    "messages": [{"role": "user", "content": "Can you search the internet about Indonesia? What does it say about it?"}]
+    "messages": [{"role": "user", "content": "Can you search the wikipedia about Indonesia? What does it say about it?"}]
 })
 
-print(result["messages"][-1].content)
+# print(result["messages"][-1].content)
+print (result)
