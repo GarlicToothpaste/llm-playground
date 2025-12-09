@@ -100,4 +100,14 @@ def wikipedia_search(state: MessageState):
     )
 
 def summarize_search(state: MessageState):
-    print("Summarize Search Node")
+    # message = state.get("search_result")
+
+    keyword_prompt = f"""
+        You are a helpful assistant. Your job is to summarize items searched on the internet.
+
+        Given this search result {state['search_result']}
+
+        Summarize the data to help the user understand the important parts
+    """
+
+    summary_message = llm.invoke(keyword_prompt)
