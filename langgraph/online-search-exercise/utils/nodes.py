@@ -63,13 +63,14 @@ def duckduckgo_search(state: MessageState):
     result = model_with_duckduckgo.invoke(f"Search wikipedia for this keyword: {keyword}")
     tool_call = result.tool_calls[0]  # First (and only) tool call
     tool = tools_by_name[tool_call['name']]  # Lookup tool
-    tool_result = tool.invoke(tool_call['args'])  # Execute with args
+    search_result = tool.invoke(tool_call['args'])  # Execute with args
     
-    print(f"Tool result: {tool_result}")    
+    # print(f"Tool result: {search_result}")    
 
-
-    
-
+    return Command(
+        update = {"search_result" : search_result},
+        goto = "summarize_search"
+    )
 
 def wikipedia_search(state: MessageState):
     
@@ -89,9 +90,14 @@ def wikipedia_search(state: MessageState):
     tool = tools_by_name[tool_call['name']]  # Lookup tool
     tool_result = tool.invoke(tool_call['args'])  # Execute with args
     
-    print(f"Tool result: {tool_result}")
+    search_result = tool.invoke(tool_call['args'])  # Execute with args
     
-    # print(search_result)
+    # print(f"Tool result: {search_result}")    
+
+    return Command(
+        update = {"search_result" : search_result},
+        goto = "summarize_search"
+    )
 
 def summarize_search(state: MessageState):
     print("Summarize Search Node")
