@@ -58,7 +58,14 @@ def duckduckgo_search(state: MessageState):
         Give a keyword to search.
     """
     keyword = llm.invoke(keyword_prompt)
+    model_with_duckduckgo = llm.bind_tools(tools_list, tool_choice="search_duckduckgo")
+
+    result = model_with_duckduckgo.invoke(f"Search wikipedia for this keyword: {keyword}")
+    tool_call = result.tool_calls[0]  # First (and only) tool call
+    tool = tools_by_name[tool_call['name']]  # Lookup tool
+    tool_result = tool.invoke(tool_call['args'])  # Execute with args
     
+    print(f"Tool result: {tool_result}")    
 
 
     
