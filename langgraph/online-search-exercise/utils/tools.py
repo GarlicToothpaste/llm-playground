@@ -8,7 +8,6 @@ def search_wikipedia(word : str):
     wiki = WikipediaRetriever()
     docs = wiki.invoke(word)
     information = "\n---\n".join([f"**{doc.metadata['title']}**\n{doc.page_content}" for doc in docs])
-    print(f"TEST TEST ------------------------------- f{information}")
     return information
 
 @tool
