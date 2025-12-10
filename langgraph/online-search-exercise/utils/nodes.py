@@ -17,7 +17,7 @@ tools_by_name = {tool.name: tool for tool in tools_list}
 
 def read_message(state:MessageState):
     """LLM Reads the User Message"""
-    print("Test Node")
+    # print("Test Node")
     return {
         "messages": HumanMessage(content=f"Processing message: {state['message_content']}")
     }
@@ -112,13 +112,13 @@ def summarize_search(state: MessageState):
 
     search_summary = llm.invoke(keyword_prompt)
 
-    print(search_summary)
+    # print(search_summary)
 
     return Command(
-        update = {"search_summary": search_summary}
+        update = {"search_summary": search_summary},
         goto = "send_reply"
     )
 
 def send_reply(state: MessageState):
-    print("Sample Reply")
-    print(state['search_summary'])
+    # print("Sample Reply")
+    print(state['search_summary'].content)
