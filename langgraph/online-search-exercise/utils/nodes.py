@@ -110,4 +110,15 @@ def summarize_search(state: MessageState):
         Summarize the data to help the user understand the important parts
     """
 
-    summary_message = llm.invoke(keyword_prompt)
+    search_summary = llm.invoke(keyword_prompt)
+
+    print(search_summary)
+
+    return Command(
+        update = {"search_summary": search_summary}
+        goto = "send_reply"
+    )
+
+def send_reply(state: MessageState):
+    print("Sample Reply")
+    print(state['search_summary'])
