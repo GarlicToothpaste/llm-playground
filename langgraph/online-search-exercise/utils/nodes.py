@@ -1,6 +1,6 @@
 from utils.state import MessageState
 from langchain_ollama import ChatOllama
-from langchain.messages import HumanMessage
+from langchain.messages import HumanMessage, AIMessage
 from utils.state import MessageClassification
 from langgraph.types import Command
 
@@ -121,4 +121,5 @@ def summarize_search(state: MessageState):
 
 def send_reply(state: MessageState):
     # print("Sample Reply")
-    print(state['search_summary'].content)
+    message = state['search_summary'].content
+    return {"messages" : [AIMessage(content=message)]}
