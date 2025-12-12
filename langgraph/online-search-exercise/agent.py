@@ -26,4 +26,4 @@ initial_state = {
 }
 
 result = app.invoke(initial_state)
-
+print(result['search_summary'].content)
