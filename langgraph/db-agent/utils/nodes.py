@@ -7,6 +7,7 @@ llm = ChatOllama(
 )
 
 def read_message(state: AgentState):
+    print (state['message_content'])
     return {
         "messages": HumanMessage(content=f"Processing message: {state['message_content']}")
     }
