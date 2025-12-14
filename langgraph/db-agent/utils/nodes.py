@@ -1,13 +1,15 @@
 from langchain_ollama import ChatOllama
-
+from langchain.messages import HumanMessage
+from utils.state import AgentState
 llm = ChatOllama(
     model="qwen3:4b",
     temperature=0.7
 )
 
-#TODO: Read User Input
-def read_message():
-    print("TEST Read Message")
+def read_message(state: AgentState):
+    return {
+        "messages": HumanMessage(content=f"Processing message: {state['message_content']}")
+    }
 
 #TODO: Classify Which Operation to use Based on the User Input
 def classify_message():
