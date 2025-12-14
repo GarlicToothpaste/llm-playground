@@ -14,11 +14,12 @@ workflow.add_node("send_update_message", send_update_message)
 
 #Edges
 workflow.add_edge(START, "read_message")
-workflow.add_edge("read_message", END)
+workflow.add_edge("read_message", "classify_message")
+workflow.add_edge("add_item", END)
 
 app = workflow.compile()
 initial_state = {
-    "message_content": "Test Message"
+    "message_content": "Add an item with name of Paper and Quantity of 100"
 }
 
 result = app.invoke(initial_state)

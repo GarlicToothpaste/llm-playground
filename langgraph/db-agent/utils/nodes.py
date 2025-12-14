@@ -28,7 +28,7 @@ def classify_message(state: AgentState):
     Classify the sql function
     """
 
-    classification = structured_llm.invoke(classification_prompt)
+    operation = structured_llm.invoke(classification_prompt)
     # print(classification)
 
     if classification['operation'] == "add_item":
@@ -43,7 +43,7 @@ def classify_message(state: AgentState):
     )
 
 #TODO: Add Items to the Database
-def add_item():
+def add_item(state: AgentState):
     print("TEST Classify Add_Item")
 
 #TODO: Update Item Information in the Database
