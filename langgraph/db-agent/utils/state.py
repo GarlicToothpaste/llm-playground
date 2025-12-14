@@ -5,4 +5,4 @@ class OperationClassification(TypedDict):
 
 class AgentState(TypedDict):
     message_content : str
-    classification : OperationClassification | None
+    operation : OperationClassification | None

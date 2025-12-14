@@ -31,14 +31,14 @@ def classify_message(state: AgentState):
     operation = structured_llm.invoke(classification_prompt)
     # print(classification)
 
-    if classification['operation'] == "add_item":
+    if operation['operation'] == "add_item":
         goto = "add_item"
-    if classification['operation'] == "update_item":
+    if operation['operation'] == "update_item":
         goto = "update_item"
 
-    print(classification['operation'])
+    print(operation['operation'])
     return Command(
-        update = {"classification" : classification},
+        update = {"operation" : operation},
         goto = goto
     )
 
