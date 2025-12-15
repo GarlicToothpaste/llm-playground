@@ -42,8 +42,14 @@ def classify_message(state: AgentState):
         goto = goto
     )
 
+#TODO: Show Items in the Database
+def show_items(state: AgentState):
+    print(state['operation'])
+    print("TEST Classify show_items")
+
 #TODO: Add Items to the Database
 def add_item(state: AgentState):
+    print(state['operation'])
     print("TEST Classify Add_Item")
 
 #TODO: Update Item Information in the Database
