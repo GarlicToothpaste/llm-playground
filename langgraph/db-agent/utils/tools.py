@@ -1,5 +1,7 @@
 from langchain.tools import tool
+from langchain_community.utilities import SQLDatabase
 
+db = SQLDatabase.from_uri("jdbc:mysql://localhost:3306/?user=root")
 #TODO: Show Database Contents
 @tool
 def show_items():
