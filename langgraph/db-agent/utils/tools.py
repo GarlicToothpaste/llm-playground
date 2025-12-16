@@ -45,6 +45,7 @@ def show_items():
             print(results_as_dict)
     except Exception as e:
         print(f"Connection failed: {e}")
+    return(results_as_dict)
 
 #TODO: Adds the Item Name, Description, and Available Stock to the DB
 @tool
