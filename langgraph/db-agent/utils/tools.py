@@ -1,7 +1,47 @@
 from langchain.tools import tool
-from langchain_community.utilities import SQLDatabase
+from sqlalchemy import create_engine
+from sqlalchemy.engine import URL
+import os
+from pathlib import Path
+from dotenv import load_dotenv
 
-db = SQLDatabase.from_uri("jdbc:mysql://localhost:3306/?user=root")
+env_path = (Path(__file__).parent.parent / ".env").resolve()
+load_dotenv(dotenv_path=env_path)  
+print(env_path)
+
+db_type = os.environ.get("DB_TYPE") 
+driver = os.environ.get("DB_DRIVER")
+username = os.environ.get("DB_USERNAME")
+password = os.environ.get("DB_PASSWORD")
+host = os.environ.get("DB_HOST")
+database = os.environ.get("DATABASE")
+port = os.environ.get("PORT") # Optional, defaults are often fine
+
+if driver:
+    drivername = f"{db_type}+{driver}"
+else:
+    drivername = db_type
+
+DATABASE_URL = URL.create(
+    drivername=drivername,
+    username=username,
+    password=password,
+    host=host,
+    database=database,
+    port=port,
+)
+
+engine = create_engine(DATABASE_URL, echo=True) 
+
+from sqlalchemy import text
+
+try:
+    with engine.connect() as connection:
+        result = connection.execute(text("SELECT 'connection successful'"))
+        print(result.scalar())
+except Exception as e:
+    print(f"Connection failed: {e}")
+
 #TODO: Show Database Contents
 @tool
 def show_items():
