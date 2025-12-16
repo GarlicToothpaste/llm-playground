@@ -1,5 +1,5 @@
 from langchain.tools import tool
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.engine import URL
 import os
 from pathlib import Path
@@ -33,19 +33,18 @@ DATABASE_URL = URL.create(
 
 engine = create_engine(DATABASE_URL, echo=True) 
 
-from sqlalchemy import text
-
-try:
-    with engine.connect() as connection:
-        result = connection.execute(text("SELECT 'connection successful'"))
-        print(result.scalar())
-except Exception as e:
-    print(f"Connection failed: {e}")
-
-#TODO: Show Database Contents
 @tool
 def show_items():
-    print("Test")
+    try:
+        with engine.connect() as connection:
+            # result = connection.execute(text("SELECT 'connection successful'"))
+
+            sql_statement = text("SELECT * FROM shop_inventory")
+            result = connection.execute(sql_statement)
+            results_as_dict = result.mappings().all()
+            print(results_as_dict)
+    except Exception as e:
+        print(f"Connection failed: {e}")
 
 #TODO: Adds the Item Name, Description, and Available Stock to the DB
 @tool
