@@ -35,6 +35,8 @@ def classify_message(state: AgentState):
     operation = structured_llm.invoke(classification_prompt)
     # print(classification)
 
+    if operation['operation'] == "show_items":
+        goto = "show_items"
     if operation['operation'] == "add_item":
         goto = "add_item"
     if operation['operation'] == "update_item":
@@ -49,7 +51,7 @@ def classify_message(state: AgentState):
 #TODO: Show Items in the Database
 def show_items(state: AgentState):
     """Shows the items in the database"""
-    model_with_tool = llm.bind_tools(tools_list, tool_choice="add_item")
+    model_with_tool = llm.bind_tools(tools_list, tool_choice="show_items")
     result = model_with_tool.invoke(state['message_content'])
     tool_call = result.tool_calls[0]  # First (and only) tool call
     tool = tools_by_name[tool_call['name']]  # Lookup tool
