@@ -35,6 +35,7 @@ engine = create_engine(DATABASE_URL, echo=True)
 
 @tool
 def show_items():
+    """Shows all the items in the database"""
     try:
         with engine.connect() as connection:
             # result = connection.execute(text("SELECT 'connection successful'"))
@@ -50,9 +51,11 @@ def show_items():
 #TODO: Adds the Item Name, Description, and Available Stock to the DB
 @tool
 def add_item():
+    """Adds an item to the database"""
     print("Test")
 
 #TODO: Updates the Item Name, Description, and Available Stock to the DB
 @tool
 def update_item():
+    """Updates details in the database"""
     print("Test")

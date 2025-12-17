@@ -2,6 +2,10 @@ from langchain_ollama import ChatOllama
 from langchain.messages import HumanMessage
 from utils.state import AgentState, OperationClassification
 from langgraph.types import Command
+from utils.tools import show_items, add_item, update_item
+
+tools_list = [show_items, add_item, update_item]
+tools_by_name = {tool.name: tool for tool in tools_list}
 
 llm = ChatOllama(
     model="qwen3:4b",
@@ -44,8 +48,24 @@ def classify_message(state: AgentState):
 
 #TODO: Show Items in the Database
 def show_items(state: AgentState):
-    print(state['operation'])
-    print("TEST Classify show_items")
+    """Shows the items in the database"""
+    model_with_tool = llm.bind_tools(tools_list, tool_choice="add_item")
+    result = model_with_tool.invoke(state['message_content'])
+    tool_call = result.tool_calls[0]  # First (and only) tool call
+    tool = tools_by_name[tool_call['name']]  # Lookup tool
+    query = tool.invoke(tool_call['args'])  # Execute with args
+
+    formatting_prompt = f"""
+        You are a helpful assistant. Your job is to format dictionary into a table format for easier viewing.
+
+        Given this message dictionary: {query}
+
+        Format the dictionary to table
+    """
+
+    output = llm.invoke(formatting_prompt)
+
+    print(output)
 
 #TODO: Add Items to the Database
 def add_item(state: AgentState):
