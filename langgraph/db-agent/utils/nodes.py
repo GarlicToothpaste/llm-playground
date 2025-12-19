@@ -67,7 +67,7 @@ def show_items(state: AgentState):
 
     output = llm.invoke(formatting_prompt)
 
-    print(output)
+    print(output.content)
 
 #TODO: Add Items to the Database
 def add_item(state: AgentState):
