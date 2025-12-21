@@ -52,7 +52,16 @@ def show_items():
 @tool
 def add_item():
     """Adds an item to the database"""
-    print("Test")
+    try:
+        with engine.connect() as connection:
+
+            sql_statement = text("INSERT INTO shop_inventory ( item_name, description, quantity) VALUES ('SQLALchemy Test', 'Sample Values lol', 15)")
+            result = connection.execute(sql_statement)
+            print(result)
+            message = "Successfully Added to the Database"
+    except Exception as e:
+        print(f"Connection failed: {e}")
+    return(message)
 
 #TODO: Updates the Item Name, Description, and Available Stock to the DB
 @tool
