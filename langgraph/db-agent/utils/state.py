@@ -6,3 +6,6 @@ class OperationClassification(TypedDict):
 class AgentState(TypedDict):
     message_content : str
     operation : OperationClassification | None
+    item_name : str | None 
+    description : str | None
+    quantity : int | None
