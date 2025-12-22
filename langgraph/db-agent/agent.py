@@ -20,8 +20,8 @@ workflow.add_edge("read_message", "classify_message")
 
 app = workflow.compile()
 initial_state = {
-    "message_content": "Show me all the items in the database." 
-    # "message_content": "Add an item with name of Paper and Quantity of 100"
+    # "message_content": "Show me all the items in the database." 
+    "message_content": "Add an item with name of Paper, Description is A4 Size,  and Quantity of 100"
 }
 
 result = app.invoke(initial_state)

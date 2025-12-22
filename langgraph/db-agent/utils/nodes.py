@@ -1,6 +1,6 @@
 from langchain_ollama import ChatOllama
 from langchain.messages import HumanMessage
-from utils.state import AgentState, OperationClassification
+from utils.state import AgentState, OperationClassification,ItemDetails
 from langgraph.types import Command
 from utils.tools import show_items, add_item, update_item
 
@@ -51,7 +51,7 @@ def classify_message(state: AgentState):
 #TODO: Show Items in the Database
 def show_items(state: AgentState):
     """Shows the items in the database"""
-    model_with_tool = llm.bind_tools(tools_list, tool_choice="show_items")
+    model_with_tool = llm.bind_tools(tools_list, tool_choice="add_item")
     result = model_with_tool.invoke(state['message_content'])
     tool_call = result.tool_calls[0]  # First (and only) tool call
     tool = tools_by_name[tool_call['name']]  # Lookup tool
@@ -71,8 +71,23 @@ def show_items(state: AgentState):
 
 #TODO: Add Items to the Database
 def add_item(state: AgentState):
-    print(state['operation'])
-    print("TEST Classify Add_Item")
+    model_with_tool = llm.bind_tools(tools_list, tool_choice="add_items")
+    structured_llm = llm.with_structured_output(ItemDetails)
+    classification_prompt = f"""
+        You are a helpful assistant. Given a sentence you put items to a database by classifying different fields to each corresponding columns 
+
+        Given this message: {state['message_content']}
+
+        Categorize the different parts of the message such as the item_name, , description , and quantity.
+    """
+    classification = structured_llm.invoke(classification_prompt)
+    print(classification)
+
+
+    # result = model_with_tool.invoke(state['message_content'])
+    # tool_call = result.tool_calls[0]  
+    # tool = tools_by_name[tool_call['name']] 
+    # query = tool.invoke(tool_call['args'])  
 
 #TODO: Update Item Information in the Database
 def update_item():
