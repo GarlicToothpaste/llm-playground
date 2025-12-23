@@ -80,13 +80,13 @@ def add_item(state: AgentState):
         Categorize the different parts of the message such as the item_name, , description , and quantity.
     """
     classification = structured_llm.invoke(classification_prompt)
-    print(classification)
+    print(classification['item_name'])
 
     tool = tools_by_name["add_item"]
     result = tool.invoke({
-        "item_name": classification.item_name,
-        "description": classification.description, 
-        "quantity": classification.quantity
+        "item_name": classification['item_name'],
+        "description": classification['description'], 
+        "quantity": classification['quantity']
     })
     
     return {
