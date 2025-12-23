@@ -50,12 +50,12 @@ def show_items():
 
 #TODO: Adds the Item Name, Description, and Available Stock to the DB
 @tool
-def add_item():
+def add_item(item_name: str , description : str , quantity: int):
     """Adds an item to the database"""
     try:
         with engine.connect() as connection:
 
-            sql_statement = text("INSERT INTO shop_inventory ( item_name, description, quantity) VALUES ('SQLALchemy Test', 'Sample Values lol', 15)")
+            sql_statement = text(f"INSERT INTO shop_inventory ( item_name, description, quantity) VALUES ({item_name}, {description}, {quantity})")
             result = connection.execute(sql_statement)
             print(result)
             message = "Successfully Added to the Database"
