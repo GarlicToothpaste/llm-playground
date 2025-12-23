@@ -1,5 +1,5 @@
 from langchain_ollama import ChatOllama
-from langchain.messages import HumanMessage
+from langchain.messages import HumanMessage, AIMessage
 from utils.state import AgentState, OperationClassification,ItemDetails
 from langgraph.types import Command
 from utils.tools import show_items, add_item, update_item
@@ -71,7 +71,6 @@ def show_items(state: AgentState):
 
 #TODO: Add Items to the Database
 def add_item(state: AgentState):
-    model_with_tool = llm.bind_tools(tools_list, tool_choice="add_items")
     structured_llm = llm.with_structured_output(ItemDetails)
     classification_prompt = f"""
         You are a helpful assistant. Given a sentence you put items to a database by classifying different fields to each corresponding columns 
@@ -83,11 +82,17 @@ def add_item(state: AgentState):
     classification = structured_llm.invoke(classification_prompt)
     print(classification)
 
-
-    # result = model_with_tool.invoke(state['message_content'])
-    # tool_call = result.tool_calls[0]  
-    # tool = tools_by_name[tool_call['name']] 
-    # query = tool.invoke(tool_call['args'])  
+    tool = tools_by_name["add_item"]
+    result = tool.invoke({
+        "item_name": classification.item_name,
+        "description": classification.description, 
+        "quantity": classification.quantity
+    })
+    
+    return {
+        "messages": [AIMessage(content=result)],  # Return success message
+        "message_content": state['message_content']  # Preserve for state
+    }
 
 #TODO: Update Item Information in the Database
 def update_item():
