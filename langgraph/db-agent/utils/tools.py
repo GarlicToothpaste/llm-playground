@@ -65,6 +65,15 @@ def add_item(item_name: str , description : str , quantity: int):
 
 #TODO: Updates the Item Name, Description, and Available Stock to the DB
 @tool
-def update_item():
+def update_item(item_name: str , description : str , quantity: int):
     """Updates details in the database"""
-    print("Test")
+    try:
+        with engine.connect() as connection:
+            #TODO : UPDATE
+            sql_statement = text(f" ")
+            result = connection.execute(sql_statement)
+            print(result)
+            message = "Successfully Updated the Entry in the Database"
+    except Exception as e:
+        print(f"Connection failed: {e}")
+    return(message)
