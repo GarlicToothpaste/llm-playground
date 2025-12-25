@@ -96,7 +96,28 @@ def add_item(state: AgentState):
 
 #TODO: Update Item Information in the Database
 def update_item():
-    print("TEST Classify Update Item")
+    structured_llm = llm.with_structured_output(ItemDetails)
+    classification_prompt = f"""
+        You are a helpful assistant. Given a sentence you put items to a database by classifying different fields to each corresponding columns 
+
+        Given this message: {state['message_content']}
+
+        Categorize the different parts of the message such as the item_name, , description , and quantity.
+    """
+    classification = structured_llm.invoke(classification_prompt)
+    print(classification['item_name'])
+
+    tool = tools_by_name["update_item"]
+    result = tool.invoke({
+        "item_name": classification['item_name'],
+        "description": classification['description'], 
+        "quantity": classification['quantity']
+    })
+    
+    return {
+        "messages": [AIMessage(content=result)],  # Return success message
+        "message_content": state['message_content']  # Preserve for state
+    }
 
 #TODO: Generate the Notification of Changes to the User
 def generate_update_notification():
