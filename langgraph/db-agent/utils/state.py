@@ -5,6 +5,7 @@ class OperationClassification(TypedDict):
 
 class ItemDetails(TypedDict):
     item_name : str | None 
+    old_item_name : str | None
     description : str | None
     quantity : int | None
 

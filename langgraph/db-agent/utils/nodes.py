@@ -102,14 +102,15 @@ def update_item(state: AgentState):
 
         Given this message: {state['message_content']}
 
-        Categorize the different parts of the message such as the item_name, , description , and quantity.
+        Categorize the different parts of the message such as the item_name, old item name, description , and quantity.
     """
     classification = structured_llm.invoke(classification_prompt)
     print(classification['item_name'])
-
+    print(classification['old_item_name'])
     tool = tools_by_name["update_item"]
     result = tool.invoke({
         "item_name": classification['item_name'],
+        "old_item_name" : classification['old_item_name'],
         "description": classification['description'], 
         "quantity": classification['quantity']
     })
