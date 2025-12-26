@@ -95,10 +95,10 @@ def add_item(state: AgentState):
     }
 
 #TODO: Update Item Information in the Database
-def update_item():
+def update_item(state: AgentState):
     structured_llm = llm.with_structured_output(ItemDetails)
     classification_prompt = f"""
-        You are a helpful assistant. Given a sentence you put items to a database by classifying different fields to each corresponding columns 
+        You are a helpful assistant. Given a sentence you update items on a database by classifying different fields to each corresponding columns 
 
         Given this message: {state['message_content']}
 

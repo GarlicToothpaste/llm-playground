@@ -70,7 +70,7 @@ def update_item(item_name: str , description : str , quantity: int):
     try:
         with engine.connect() as connection:
             #TODO : UPDATE
-            sql_statement = text(f" ")
+            sql_statement = text(f"UPDATE shop_inventory SET item_name = {item_name}")
             result = connection.execute(sql_statement)
             print(result)
             message = "Successfully Updated the Entry in the Database"
