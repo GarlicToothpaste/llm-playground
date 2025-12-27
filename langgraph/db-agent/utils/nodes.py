@@ -18,7 +18,6 @@ def read_message(state: AgentState):
         "messages": HumanMessage(content=f"Processing message: {state['message_content']}")
     }
 
-#TODO: Classify Which Operation to use Based on the User Input
 def classify_message(state: AgentState):
     """Use the LLM to classify which tool to use"""
 
@@ -48,7 +47,6 @@ def classify_message(state: AgentState):
         goto = goto
     )
 
-#TODO: Show Items in the Database
 def show_items(state: AgentState):
     """Shows the items in the database"""
     model_with_tool = llm.bind_tools(tools_list, tool_choice="add_item")
@@ -69,7 +67,6 @@ def show_items(state: AgentState):
 
     print(output.content)
 
-#TODO: Add Items to the Database
 def add_item(state: AgentState):
     structured_llm = llm.with_structured_output(ItemDetails)
     classification_prompt = f"""
@@ -94,7 +91,6 @@ def add_item(state: AgentState):
         "message_content": state['message_content']  # Preserve for state
     }
 
-#TODO: Update Item Information in the Database
 def update_item(state: AgentState):
     structured_llm = llm.with_structured_output(ItemDetails)
     classification_prompt = f"""
