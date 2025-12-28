@@ -12,4 +12,5 @@ class ItemDetails(TypedDict):
 class AgentState(TypedDict):
     message_content : str
     operation : OperationClassification | None
+    operation_summary: str | None
     item_details : ItemDetails | None
