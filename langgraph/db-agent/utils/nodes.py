@@ -64,8 +64,13 @@ def show_items(state: AgentState):
     """
 
     output = llm.invoke(formatting_prompt)
+    
+    operation_summary = output.content
 
-    print(output.content)
+    return Command(
+        update={"operation_summary" : operation_summary},
+        goto="generate_update_notification"
+    )
 
 def add_item(state: AgentState):
     structured_llm = llm.with_structured_output(ItemDetails)
@@ -80,16 +85,21 @@ def add_item(state: AgentState):
     print(classification['item_name'])
 
     tool = tools_by_name["add_item"]
-    result = tool.invoke({
+    operation_summary = tool.invoke({
         "item_name": classification['item_name'],
         "description": classification['description'], 
         "quantity": classification['quantity']
     })
     
-    return {
-        "messages": [AIMessage(content=result)],  # Return success message
-        "message_content": state['message_content']  # Preserve for state
-    }
+    return Command(
+        update={"operation_summary" : operation_summary},
+        goto="generate_update_notification"
+    )
+
+    # return {
+    #     "messages": [AIMessage(content=result)],  # Return success message
+    #     "message_content": state['message_content']  # Preserve for state
+    # }
 
 def update_item(state: AgentState):
     structured_llm = llm.with_structured_output(ItemDetails)
@@ -104,21 +114,28 @@ def update_item(state: AgentState):
     print(classification['item_name'])
     print(classification['old_item_name'])
     tool = tools_by_name["update_item"]
-    result = tool.invoke({
+    operation_summary = tool.invoke({
         "item_name": classification['item_name'],
         "old_item_name" : classification['old_item_name'],
         "description": classification['description'], 
         "quantity": classification['quantity']
     })
     
-    return {
-        "messages": [AIMessage(content=result)],  # Return success message
-        "message_content": state['message_content']  # Preserve for state
-    }
+
+    return Command(
+        update={"operation_summary" : operation_summary},
+        goto="generate_update_notification"
+    )
+
+    # return {
+    #     "messages": [AIMessage(content=result)],  # Return success message
+    #     "message_content": state['message_content']  # Preserve for state
+    # }
 
 #TODO: Generate the Notification of Changes to the User
-def generate_update_notification():
-    print("TEST Generate Update Notif")
+def generate_update_notification(state:AgentState):
+    print(state["operation_summary"])
+
 
 
 #TODO: Send Update Message to the User
