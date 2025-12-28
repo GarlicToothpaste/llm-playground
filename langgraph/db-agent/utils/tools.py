@@ -52,11 +52,12 @@ def show_items():
 @tool
 def add_item(item_name: str , description : str , quantity: int):
     """Adds an item to the database"""
+    message = ""
     try:
         with engine.connect() as connection:
 
-            sql_statement = text(f"INSERT INTO shop_inventory ( item_name, description, quantity) VALUES ({item_name}, {description}, {quantity})")
-            result = connection.execute(sql_statement)
+            sql_statement = text(f"INSERT INTO shop_inventory ( item_name, description, quantity) VALUES (:item_name, :description, :quantity)")
+            result = connection.execute(sql_statement, {"item_name": item_name, "description" : description, "quantity": quantity})
             print(result)
             message = "Successfully Added to the Database"
     except Exception as e:
@@ -67,9 +68,9 @@ def add_item(item_name: str , description : str , quantity: int):
 @tool
 def update_item(item_name: str, old_item_name: str , description : str , quantity: int):
     """Updates details in the database"""
+    message = ""
     try:
         with engine.connect() as connection:
-            #TODO : UPDATE
             sql_statement = text("UPDATE shop_inventory SET item_name = :item_name WHERE item_name = :old_item_name ")
             result = connection.execute(sql_statement, {"item_name": item_name, "old_item_name": old_item_name})
             connection.commit() 
