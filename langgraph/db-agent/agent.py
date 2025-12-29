@@ -16,13 +16,13 @@ workflow.add_node("send_update_message", send_update_message)
 #Edges
 workflow.add_edge(START, "read_message")
 workflow.add_edge("read_message", "classify_message")
-# workflow.add_edge("classify_message", END)
+workflow.add_edge("send_update_message", END)
 
 app = workflow.compile()
 initial_state = {
     # "message_content": "Show me all the items in the database." 
-    # "message_content": "Add an item with name of Paper, Description is A4 Size,  and Quantity of 100"
-    "message_content": "Update the item name of Notebook to Spiral Notebook"
+    "message_content": "Add an item with name of Paper, Description is A4 Size,  and Quantity of 100"
+    # "message_content": "Update the item name of Notebook to Spiral Notebook"
 }
 
 result = app.invoke(initial_state)

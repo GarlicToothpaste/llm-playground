@@ -134,10 +134,12 @@ def update_item(state: AgentState):
 
 #TODO: Generate the Notification of Changes to the User
 def generate_update_notification(state:AgentState):
-    print(state["operation_summary"])
 
+    return Command(
+        goto="send_update_message"
+    )
 
+def send_update_message(state:AgentState):
 
-#TODO: Send Update Message to the User
-def send_update_message():
-    print("TEST Send Update Message")
+    message = state['operation_summary']
+    return {"messages" : [AIMessage(content=message)]}
