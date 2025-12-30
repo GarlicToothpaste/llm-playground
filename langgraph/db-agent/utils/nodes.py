@@ -132,10 +132,31 @@ def update_item(state: AgentState):
     #     "message_content": state['message_content']  # Preserve for state
     # }
 
-#TODO: Generate the Notification of Changes to the User
 def generate_update_notification(state:AgentState):
+    
+    message_summary = ''
+
+    if state['operation'] == 'show_items':
+        pass
+    elif state['operation'] == 'add_item':
+        item_details = state.get('item_details', {})
+        
+        item_name = item_details.get('item_name')  
+        description = item_details.get('description')
+        quantity = item_details.get('quantity')  
+
+        message_summary = f'{item_name}, {description}, {quantity} has been added to the database.'
+    
+    elif state['operation'] == 'update_item':
+        item_details = state.get('item_details', {})
+
+        item_name = item_details.get('item_name') 
+        old_item_name = item_details.get('old_item_name')  
+
+        message_summary = f'{old_item_name} has been changed to {item_name}'
 
     return Command(
+        update={"operation_summary":message_summary},
         goto="send_update_message"
     )
 
