@@ -143,7 +143,6 @@ def generate_update_notification(state:AgentState):
 
     return Command(
         update={"operation_summary":message_summary},
-        goto="send_update_message"
     )
 
 def send_update_message(state:AgentState):

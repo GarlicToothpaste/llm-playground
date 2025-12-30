@@ -16,6 +16,7 @@ workflow.add_node("send_update_message", send_update_message)
 #Edges
 workflow.add_edge(START, "read_message")
 workflow.add_edge("read_message", "classify_message")
+workflow.add_edge("generate_update_notification", "send_update_message")
 workflow.add_edge("send_update_message", END)
 
 app = workflow.compile()
