@@ -96,11 +96,6 @@ def add_item(state: AgentState):
         goto="generate_update_notification"
     )
 
-    # return {
-    #     "messages": [AIMessage(content=result)],  # Return success message
-    #     "message_content": state['message_content']  # Preserve for state
-    # }
-
 def update_item(state: AgentState):
     structured_llm = llm.with_structured_output(ItemDetails)
     classification_prompt = f"""
@@ -121,38 +116,29 @@ def update_item(state: AgentState):
         "quantity": classification['quantity']
     })
     
-
     return Command(
         update={"operation_summary" : operation_summary},
         goto="generate_update_notification"
     )
-
-    # return {
-    #     "messages": [AIMessage(content=result)],  # Return success message
-    #     "message_content": state['message_content']  # Preserve for state
-    # }
 
 def generate_update_notification(state:AgentState):
     
     message_summary = ''
 
     if state['operation'] == 'show_items':
-        pass
+        message_summary = state['operation_summary']
+
     elif state['operation'] == 'add_item':
         item_details = state.get('item_details', {})
-        
         item_name = item_details.get('item_name')  
         description = item_details.get('description')
         quantity = item_details.get('quantity')  
-
         message_summary = f'{item_name}, {description}, {quantity} has been added to the database.'
     
     elif state['operation'] == 'update_item':
         item_details = state.get('item_details', {})
-
         item_name = item_details.get('item_name') 
         old_item_name = item_details.get('old_item_name')  
-
         message_summary = f'{old_item_name} has been changed to {item_name}'
 
     return Command(
