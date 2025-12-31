@@ -32,7 +32,6 @@ def classify_message(state: AgentState):
     """
 
     operation = structured_llm.invoke(classification_prompt)
-    # print(classification)
 
     if operation['operation'] == "show_items":
         goto = "show_items"
@@ -51,9 +50,9 @@ def show_items(state: AgentState):
     """Shows the items in the database"""
     model_with_tool = llm.bind_tools(tools_list, tool_choice="add_item")
     result = model_with_tool.invoke(state['message_content'])
-    tool_call = result.tool_calls[0]  # First (and only) tool call
-    tool = tools_by_name[tool_call['name']]  # Lookup tool
-    query = tool.invoke(tool_call['args'])  # Execute with args
+    tool_call = result.tool_calls[0]  
+    tool = tools_by_name[tool_call['name']]  
+    query = tool.invoke(tool_call['args'])  
 
     formatting_prompt = f"""
         You are a helpful assistant. Your job is to format dictionary into a table format for easier viewing.
@@ -73,6 +72,7 @@ def show_items(state: AgentState):
     )
 
 def add_item(state: AgentState):
+    """Adds an item to the sql table"""
     structured_llm = llm.with_structured_output(ItemDetails)
     classification_prompt = f"""
         You are a helpful assistant. Given a sentence you put items to a database by classifying different fields to each corresponding columns 
@@ -97,6 +97,7 @@ def add_item(state: AgentState):
     )
 
 def update_item(state: AgentState):
+    """Updates a name of an item in the sql table"""
     structured_llm = llm.with_structured_output(ItemDetails)
     classification_prompt = f"""
         You are a helpful assistant. Given a sentence you update items on a database by classifying different fields to each corresponding columns 
@@ -122,7 +123,7 @@ def update_item(state: AgentState):
     )
 
 def generate_update_notification(state:AgentState):
-    
+    """Generates the notification on the activity made by the user"""
     message_summary = ''
 
     if state['operation'] == 'show_items':
@@ -146,6 +147,6 @@ def generate_update_notification(state:AgentState):
     )
 
 def send_update_message(state:AgentState):
-
+    """Sends the notification of the activity done by the user"""
     message = state['operation_summary']
     return {"messages" : [AIMessage(content=message)]}
