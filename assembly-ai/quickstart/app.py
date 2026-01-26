@@ -1,8 +1,11 @@
 import assemblyai as aai
+import os 
+from dotenv import load_dotenv
 
-aai.settings.api_key = "<YOUR_API_KEY>"
+load_dotenv()
 
-# audio_file = "./local_file.mp3"
+aai.settings.api_key = os.getenv('ASSEMBLYAI_API_KEY')
+
 audio_file = "https://assembly.ai/wildfires.mp3"
 
 transcript = aai.Transcriber().transcribe(audio_file)
