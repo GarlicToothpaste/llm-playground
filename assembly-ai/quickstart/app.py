@@ -1,3 +1,4 @@
+#https://www.assemblyai.com/docs/pre-recorded-audio/code-switching
 import assemblyai as aai
 import os 
 from dotenv import load_dotenv
