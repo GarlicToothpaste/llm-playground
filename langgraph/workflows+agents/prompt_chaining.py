@@ -68,7 +68,7 @@ chain = workflow.compile()
 
 # Show workflow
 graph_bytes = chain.get_graph().draw_mermaid_png()
-with open("chain_graph.png", "wb") as f:
+with open("prompt_chaining_graph.png", "wb") as f:
     f.write(graph_bytes)
 
 # Invoke
