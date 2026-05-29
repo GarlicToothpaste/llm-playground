@@ -1,3 +1,5 @@
+## https://docs.langchain.com/oss/python/langgraph/workflows-agents
+
 from langchain_ollama import ChatOllama
 
 llm = ChatOllama(
