@@ -69,7 +69,7 @@ def llm_call(state: WorkerState):
 
     return {"completed_sections": [section.content]}
 
-def sythesizer(state: State):
+def synthesizer(state: State):
     """Synthesize full report from sections"""
 
     completed_sections = state["completed_sections"]
@@ -77,3 +77,34 @@ def sythesizer(state: State):
     completed_report_sections = "\n\n---\n\n".join(completed_sections)
 
     return {"final_report": completed_report_sections}
+
+
+def assign_workers(state: State):
+    """Assign a worker to each section in the plan"""
+
+    return [Send("llm_call", {"section" : s}) for s in state['sections']]
+
+orchestrator_worker_builder = StateGraph(State)
+
+orchestrator_worker_builder.add_node("orchestrator", orchestrator)
+orchestrator_worker_builder.add_node("llm_call", llm_call)
+orchestrator_worker_builder.add_node("synthesizer", synthesizer)
+
+orchestrator_worker_builder.add_edge(START, "orchestrator")
+orchestrator_worker_builder.add_conditional_edges(
+    "orchestrator", assign_workers, ['llm_call']
+)
+orchestrator_worker_builder.add_edge("llm_call", "synthesizer")
+orchestrator_worker_builder.add_edge("synthesizer", END)
+
+orchestrator_worker = orchestrator_worker_builder.compile()
+
+orchestrator_worker_graph = orchestrator_worker.get_graph().draw_mermaid_png()
+with open("orchestrator_worker.png", "wb") as f:
+    f.write(orchestrator_worker_graph)
+
+state = orchestrator_worker.invoke({"topic": "Create a report on LLM scaling laws"})
+print(state["final_report"])
+
+from IPython.display import Markdown
+Markdown(state["final_report"])
